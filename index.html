@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 日本冬季旅行 | 行程手冊</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+    
+    :root {
+      --jp-bg: #F9F7F2;
+      --jp-ink: #2C3E50;
+      --jp-accent: #E74C3C;
+      --jp-gold: #C5A059;
+    }
+
+    body {
+      font-family: 'Noto Sans+TC', sans-serif;
+      background-color: var(--jp-bg);
+      color: var(--jp-ink);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, .serif {
+      font-family: 'Noto Serif TC', serif;
+    }
+
+    .washi-card {
+      background: white;
+      border: 1px solid #E5E1D8;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .washi-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--jp-ink);
+    }
+
+    .nav-tab {
+      transition: all 0.3s ease;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-tab.active {
+      color: var(--jp-accent);
+      border-bottom: 2px solid var(--jp-accent);
+      font-weight: 700;
+    }
+
+    .map-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--jp-gold);
+      font-size: 0.85rem;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .map-link:hover {
+      border-bottom: 1px solid var(--jp-gold);
+      opacity: 0.8;
+    }
+
+    .timeline-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--jp-ink);
+      border-radius: 2px;
+      position: absolute;
+      left: -20px;
+      top: 10px;
+    }
+
+    /* 隱藏捲軸 */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "firebase/": "https://esm.sh/firebase@^12.7.0/"
+  }
+}
+</script>
+</head>
+<body class="pb-20">
+
+  <!-- Header -->
+  <header class="py-12 px-6 text-center border-b border-gray-200">
+    <div class="text-xs tracking-[0.5em] text-gray-400 mb-2 uppercase">Itinerary · Winter 2026</div>
+    <h1 class="text-4xl font-bold tracking-tight mb-2">日本冬旅。東京富士</h1>
+    <p class="text-sm font-light text-gray-500">1月10日 — 1月17日</p>
+  </header>
+
+  <!-- Quick Links Section -->
+  <section class="max-w-4xl mx-auto px-6 py-8">
+    <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+      <span class="w-2 h-2 bg-red-500 rotate-45"></span> 必備工具
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <a href="https://services.digital.go.jp/zh-cmn-hant/visit-japan-web/" target="_blank" class="washi-card p-4 text-center hover:bg-gray-50 transition">
+        <div class="text-2xl mb-1">✈️</div>
+        <div class="text-xs font-bold">入境辦理</div>
+      </a>
+      <a href="https://luggagent.com/zh_TW" target="_blank" class="washi-card p-4 text-center hover:bg-gray-50 transition">
+        <div class="text-2xl mb-1">📦</div>
+        <div class="text-xs font-bold">行李寄送</div>
+      </a>
+      <a href="https://s.klook.com/c/mXYxLnzz32" target="_blank" class="washi-card p-4 text-center hover:bg-gray-50 transition">
+        <div class="text-2xl mb-1">🎨</div>
+        <div class="text-xs font-bold">teamLab</div>
+      </a>
+      <a href="https://www.jnto.go.jp/emergency/chc/do_travel_insurance05.html" target="_blank" class="washi-card p-4 text-center hover:bg-gray-50 transition">
+        <div class="text-2xl mb-1">🏥</div>
+        <div class="text-xs font-bold">醫療保險</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <div class="sticky top-0 bg-[#F9F7F2]/90 backdrop-blur-md z-40 border-b border-gray-200 overflow-x-auto no-scrollbar">
+    <div class="flex px-6 min-w-max">
+      <button onclick="showDay(1)" id="tab-1" class="nav-tab active px-6 py-4 text-sm">D1 01.10</button>
+      <button onclick="showDay(2)" id="tab-2" class="nav-tab px-6 py-4 text-sm">D2 01.11</button>
+      <button onclick="showDay(3)" id="tab-3" class="nav-tab px-6 py-4 text-sm">D3 01.12</button>
+      <button onclick="showDay(4)" id="tab-4" class="nav-tab px-6 py-4 text-sm">D4 01.13</button>
+      <button onclick="showDay(5)" id="tab-5" class="nav-tab px-6 py-4 text-sm">D5 01.14</button>
+      <button onclick="showDay(6)" id="tab-6" class="nav-tab px-6 py-4 text-sm">D6 01.15</button>
+      <button onclick="showDay(7)" id="tab-7" class="nav-tab px-6 py-4 text-sm">D7 01.16</button>
+      <button onclick="showDay(8)" id="tab-8" class="nav-tab px-6 py-4 text-sm">D8 01.17</button>
+    </div>
+  </div>
+
+  <!-- Content Container -->
+  <main id="itinerary-content" class="max-w-3xl mx-auto px-6 py-10">
+    <!-- Content will be injected by JavaScript -->
+  </main>
+
+  <!-- Footer Info & Warning -->
+  <div id="extra-info" class="max-w-3xl mx-auto px-6">
+    <div class="bg-gray-100 p-6 rounded text-sm text-gray-600 space-y-2">
+      <h3 class="font-bold text-gray-800">💡 行前關鍵提醒</h3>
+      <p>• <strong>12/10 09:00 (台)</strong>: 搶購 1/14 吉卜力門票。</p>
+      <p>• <strong>自駕配備</strong>: 富士山山區 1/11-12 需確認租車包含 <strong>雪胎</strong>。</p>
+      <p>• <strong>網路</strong>: <a href="https://shopee.tw/esim_go" class="text-blue-500 underline">eSIM 推薦連結</a></p>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Mockup (for PWA feel) -->
+  <nav class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-200 flex items-center justify-around z-50 px-4">
+    <div class="flex flex-col items-center opacity-50"><span class="text-xl">🏠</span><span class="text-[10px]">首頁</span></div>
+    <div class="flex flex-col items-center text-red-500 font-bold"><span class="text-xl">📅</span><span class="text-[10px]">行程</span></div>
+    <div class="flex flex-col items-center opacity-50" onclick="window.scrollTo({top:0, behavior:'smooth'})"><span class="text-xl">🔝</span><span class="text-[10px]">回頂端</span></div>
+  </nav>
+
+  <script>
+    const itinerary = [
+      {
+        id: 1,
+        date: "1月10日 (六)",
+        title: "抵達與泉天空之湯",
+        accommodation: "羽田機場附近",
+        events: [
+          { time: "01:30 - 07:00", act: "泉天空之湯 羽田機場", desc: "抵達後前往第三航廈頂樓泡溫泉，觀賞飛機起降。", map: "泉天空の湯+羽田空港" }
+        ]
+      },
+      {
+        id: 2,
+        date: "1月11日 (日)",
+        title: "富士山自駕之旅 (D1)",
+        accommodation: "Megu Fuji 2021",
+        events: [
+          { time: "08:00", act: "羽田機場取車", desc: "確認備有雪胎，出發前往河口湖。", map: "Toyota+Rent+a+Car+Haneda" },
+          { time: "11:00", act: "忍野八海", desc: "享用名水豆腐與草餅。", map: "忍野八海" },
+          { time: "11:30", act: "金鳥居 / 日川時計店", desc: "富士山街景拍攝。", map: "金鳥居" },
+          { time: "13:00", act: "河口湖木之花美術館", desc: "達洋貓主題美術館。", map: "河口湖木ノ花美術館" },
+          { time: "15:00", act: "大石公園", desc: "湖畔觀景與伴手禮。", map: "大石公園" },
+          { time: "16:30", act: "西湖 療癒之里 根場", desc: "茅葺屋聚落。", map: "西湖いやしの里根場" }
+        ]
+      },
+      {
+        id: 3,
+        date: "1月12日 (一)",
+        title: "富士山與鐮倉江之島",
+        accommodation: "新宿車站西口/南口飯店",
+        events: [
+          { time: "07:00", act: "新倉山淺間公園", desc: "五重塔與富士山絕景。", map: "新倉山浅間公園" },
+          { time: "10:00", act: "江之島 朝日堂", desc: "品嚐現壓章魚仙貝。", map: "江の島+あさひ本店" },
+          { time: "12:00", act: "午餐: 七里濱 Bastides", desc: "海岸線景觀餐廳。", map: "Bastides+Shichirigahama" },
+          { time: "13:30", act: "佐助稲荷神社", desc: "朱紅鳥居隧道。", map: "佐助稲荷神社" },
+          { time: "15:00", act: "小町通 寿清庵", desc: "抹茶可莉餅漫步。", map: "寿清庵+鎌倉" },
+          { time: "18:30", act: "新宿還車 & 歌舞伎町", desc: "看哥吉拉與新宿購物。", map: "新宿歌舞伎町" }
+        ]
+      },
+      {
+        id: 4,
+        date: "1月13日 (二)",
+        title: "新宿/澀谷 購物聖地",
+        accommodation: "新宿飯店",
+        events: [
+          { time: "07:30", act: "新宿御苑", desc: "園內星巴克晨間散步。", map: "新宿御苑" },
+          { time: "10:00", act: "北村相機 (Kitamura Camera)", desc: "新宿二手機相機聖地。", map: "北村写真機店" },
+          { time: "14:30", act: "澀谷 Tower Records", desc: "全球最大唱片行巡禮。", map: "Tower+Records+Shibuya" },
+          { time: "17:00", act: "宮下公園 MIYASHITA PARK", desc: "空中公園與潮流店。", map: "宮下公園" }
+        ]
+      },
+      {
+        id: 5,
+        date: "1月14日 (三)",
+        title: "市區漫遊與 Sky Bus",
+        accommodation: "新宿飯店",
+        events: [
+          { time: "09:00", act: "SKY BUS TOKYO", desc: "丸之內搭車，漫遊東京鐵塔路線。", map: "Sky+Bus+Tokyo+Marunouchi" },
+          { time: "11:30", act: "谷中銀座老街", desc: "江戶風情，著名的和牛炸肉餅。", map: "谷中銀座" },
+          { time: "14:00", act: "上野 阿美橫丁", desc: "最後採購藥妝與零食。", map: "阿美横丁" }
+        ]
+      },
+      {
+        id: 6,
+        date: "1月15日 (四)",
+        title: "迪士尼海洋 (米妮主題)",
+        accommodation: "東京灣舞濱日航大酒店",
+        events: [
+          { time: "07:30", act: "東京迪士尼海洋", desc: "提前排隊，搶攻 Fantasy Springs 預約券。", map: "Tokyo+DisneySea" },
+          { time: "21:30", act: "入住舞濱飯店", desc: "搭乘單軌電車回日航大酒店。", map: "Grand+Nikko+Tokyo+Bay+Maihama" }
+        ]
+      },
+      {
+        id: 7,
+        date: "1月16日 (五)",
+        title: "橫濱海港漫步",
+        accommodation: "羽田 泉天空之湯",
+        events: [
+          { time: "10:00", act: "橫濱空中纜車 Air Cabin", desc: "高空俯瞰橫濱港。", map: "Yokohama+Air+Cabin" },
+          { time: "12:00", act: "合味道紀念館", desc: "製作專屬杯麵。", map: "Cupnoodles+Museum+Yokohama" },
+          { time: "18:00", act: "橫濱中華街", desc: "享用晚餐並漫步元町。", map: "横浜中華街" },
+          { time: "23:00", act: "抵達羽田機場", desc: "溫泉休息準備凌晨登機。", map: "泉天空の湯+羽田空港" }
+        ]
+      },
+      {
+        id: 8,
+        date: "1月17日 (六)",
+        title: "返程台北",
+        accommodation: "Home",
+        events: [
+          { time: "03:30", act: "羽田機場 Check-in", desc: "辦理報到與免稅店巡禮。", map: "Haneda+Airport+Terminal+3" },
+          { time: "05:45", act: "起飛返台", desc: "帶著滿滿回憶回家。", map: "" }
+        ]
+      }
+    ];
+
+    function showDay(dayId) {
+      const day = itinerary.find(d => d.id === dayId);
+      const container = document.getElementById('itinerary-content');
+      
+      // Update Tabs
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(`tab-${dayId}`).classList.add('active');
+
+      // Generate HTML
+      let html = `
+        <div class="animate-in fade-in duration-500 slide-in-from-bottom-2">
+          <div class="mb-8 border-l-4 border-red-500 pl-4">
+            <h2 class="text-3xl font-bold">${day.date}</h2>
+            <p class="text-gray-500 mt-1">${day.title}</p>
+            <div class="mt-3 text-xs flex items-center gap-2 text-gray-400">
+              <span>🏠 住宿:</span>
+              <span class="text-gray-700 font-medium">${day.accommodation}</span>
+            </div>
+          </div>
+          
+          <div class="space-y-10 pl-4 border-l border-gray-100 ml-2 relative">
+      `;
+
+      day.events.forEach(ev => {
+        html += `
+          <div class="relative">
+            <div class="timeline-dot"></div>
+            <div class="text-xs font-bold text-gray-400 mb-1">${ev.time}</div>
+            <div class="flex justify-between items-start mb-1">
+              <h4 class="text-lg font-bold">${ev.act}</h4>
+              ${ev.map ? `<a href="https://www.google.com/maps/search/?api=1&query=${ev.map}" target="_blank" class="map-link">
+                📍 導航
+              </a>` : ''}
+            </div>
+            <p class="text-sm text-gray-600 font-light leading-relaxed">${ev.desc}</p>
+          </div>
+        `;
+      });
+
+      html += `</div></div>`;
+      container.innerHTML = html;
+      window.scrollTo({top: 300, behavior: 'smooth'});
+    }
+
+    // Initialize with Day 1
+    document.addEventListener('DOMContentLoaded', () => {
+      showDay(1);
+    });
+  </script>
+</body>
+</html>

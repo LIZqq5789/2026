@@ -1,0 +1,7 @@
+{
+  "name": "2026 日本冬季行程",
+  "description": "極簡日系行程手冊，包含地圖導航與必備連結。",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
